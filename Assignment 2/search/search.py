@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -70,9 +71,10 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem: SearchProblem):
+
+def depthFirstSearch(problem: SearchProblem, succesor=None):
     """
     Search the deepest nodes in the search tree first.
 
@@ -87,17 +89,38 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Stack
+    visited = Stack()
+    not_visited = Stack()
+    not_visited.push((problem.getStartState(), []))
+
+    while not not_visited.isEmpty():
+        current, path = not_visited.pop()
+        visited.push(current)
+
+        if problem.isGoalState(current):
+            return path
+
+        succesors = []
+        succesors = problem.getSuccessors(current)
+        for i in succesors:
+            if i[0] not in visited.list:
+                new_path = path + [i[1]]
+                not_visited.push((i[0], new_path))
+    return []
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -105,6 +128,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
