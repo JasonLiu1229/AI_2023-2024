@@ -96,6 +96,8 @@ def depthFirstSearch(problem: SearchProblem, succesor=None):
 
     while not not_visited.isEmpty():
         current, path = not_visited.pop()
+        if current in visited.list:
+            continue
         visited.push(current)
 
         if problem.isGoalState(current):
@@ -120,6 +122,8 @@ def breadthFirstSearch(problem: SearchProblem):
 
     while not not_visited.isEmpty():
         current, path = not_visited.pop()
+        if current in visited.list:
+            continue
         visited.push(current)
 
         if problem.isGoalState(current):
