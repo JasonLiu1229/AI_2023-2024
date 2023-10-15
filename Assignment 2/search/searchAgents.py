@@ -299,6 +299,8 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
+        # Added code
+        self.startingGameState = startingGameState
 
     def getStartState(self):
         """
@@ -306,15 +308,18 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return self.startingPosition, []
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        if state in self.corners:
-            return True
+        if state[0] in self.corners:
+            if state[0] not in state[1]:
+                state[1].append(state[0])
+            if len(state[1]) == 4:
+                return True
         return False
 
     def getSuccessors(self, state: Any):
@@ -329,15 +334,22 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        x, y = state[0]
+        visitedCorners = state[1]
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
             "*** YOUR CODE HERE ***"
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                nextState = (nextx, nexty)
+                cost = 1
+                if nextState in self.corners:
+                    if nextState not in visitedCorners:
+                        visitedCorners.append(nextState)
+                successors.append((nextState, visitedCorners, action, cost))
 
         self._expanded += 1  # DO NOT CHANGE
         return successors
