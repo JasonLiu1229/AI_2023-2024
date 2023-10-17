@@ -318,8 +318,7 @@ class CornersProblem(search.SearchProblem):
         if state[0] in self.corners:
             if state[0] not in state[1]:
                 state[1].append(state[0])
-            if len(state[1]) == 4:
-                return True
+            return len(state[1]) == 4
         return False
 
     def getSuccessors(self, state: Any):
@@ -332,10 +331,8 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
         successors = []
         x, y = state[0]
-        visitedCorners = state[1]
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -343,13 +340,14 @@ class CornersProblem(search.SearchProblem):
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
+            nextState = (nextx, nexty)
+            visitedCorners = list(state[1])
             if not hitsWall:
-                nextState = (nextx, nexty)
                 cost = 1
                 if nextState in self.corners:
                     if nextState not in visitedCorners:
                         visitedCorners.append(nextState)
-                successors.append((nextState, visitedCorners, action, cost))
+                successors.append(((nextState, visitedCorners), action, cost))
 
         self._expanded += 1  # DO NOT CHANGE
         return successors

@@ -92,10 +92,13 @@ def depthFirstSearch(problem: SearchProblem, succesor=None):
     from util import Stack
     visited = Stack()
     not_visited = Stack()
-    not_visited.push((problem.getStartState(), []))
+    path_Stack = Stack()
+    not_visited.push(problem.getStartState())
+    path_Stack.push([])
 
     while not not_visited.isEmpty():
-        current, path = not_visited.pop()
+        current = not_visited.pop()
+        path = path_Stack.pop()
         if current in visited.list:
             continue
         visited.push(current)
@@ -108,7 +111,8 @@ def depthFirstSearch(problem: SearchProblem, succesor=None):
         for i in succesors:
             if i[0] not in visited.list:
                 new_path = path + [i[1]]
-                not_visited.push((i[0], new_path))
+                not_visited.push(i[0])
+                path_Stack.push(new_path)
     return []
 
 
@@ -118,10 +122,13 @@ def breadthFirstSearch(problem: SearchProblem):
     from util import Queue
     visited = Queue()
     not_visited = Queue()
-    not_visited.push((problem.getStartState(), []))
+    path_queue = Queue()
+    not_visited.push(problem.getStartState())
+    path_queue.push([])
 
     while not not_visited.isEmpty():
-        current, path = not_visited.pop()
+        current = not_visited.pop()
+        path = path_queue.pop()
         if current in visited.list:
             continue
         visited.push(current)
@@ -129,12 +136,12 @@ def breadthFirstSearch(problem: SearchProblem):
         if problem.isGoalState(current):
             return path
 
-        succesors = []
         succesors = problem.getSuccessors(current)
         for i in succesors:
             if i[0] not in visited.list:
                 new_path = path + [i[1]]
-                not_visited.push((i[0], new_path))
+                not_visited.push(i[0])
+                path_queue.push(new_path)
     return []
 
 
@@ -144,10 +151,16 @@ def uniformCostSearch(problem: SearchProblem):
     from util import PriorityQueue, Queue
     visited = Queue()
     not_visited = PriorityQueue()
-    not_visited.push((problem.getStartState(), [], 0), 0)
+    path_priorityQueue = PriorityQueue()
+    g_valueQueue = PriorityQueue()
+    not_visited.push(problem.getStartState(), 0)
+    path_priorityQueue.push([], 0)
+    g_valueQueue.push(0, 0)
 
     while not not_visited.isEmpty():
-        current, path, cost = not_visited.pop()
+        current = not_visited.pop()
+        path = path_priorityQueue.pop()
+        cost = g_valueQueue.pop()
         if current in visited.list:
             continue
         visited.push(current)
@@ -161,7 +174,9 @@ def uniformCostSearch(problem: SearchProblem):
             if i[0] not in visited.list:
                 new_path = path + [i[1]]
                 new_cost = cost + i[2]
-                not_visited.push((i[0], new_path, new_cost), new_cost)
+                not_visited.push(i[0], new_cost)
+                path_priorityQueue.push(new_path, new_cost)
+                g_valueQueue.push(new_cost, new_cost)
     return []
 
 
@@ -179,10 +194,16 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     from util import PriorityQueue, Queue
     visited = Queue()
     not_visited = PriorityQueue()
-    not_visited.push((problem.getStartState(), [], 0), 0)
+    path_priorityQueue = PriorityQueue()
+    g_valueQueue = PriorityQueue()
+    not_visited.push(problem.getStartState(), 0)
+    path_priorityQueue.push([], 0)
+    g_valueQueue.push(0, 0)
 
     while not not_visited.isEmpty():
-        current, path, cost = not_visited.pop()
+        current = not_visited.pop()
+        path = path_priorityQueue.pop()
+        cost = g_valueQueue.pop()
         if current in visited.list:
             continue
         visited.push(current)
@@ -198,7 +219,9 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
                 g_value = cost + i[2]
                 h_value = heuristic(i[0], problem)
                 f_value = h_value + g_value
-                not_visited.push((i[0], new_path, g_value), f_value)
+                not_visited.push(i[0], f_value)
+                path_priorityQueue.push(new_path, f_value)
+                g_valueQueue.push(g_value, f_value)
     return []
 
 
