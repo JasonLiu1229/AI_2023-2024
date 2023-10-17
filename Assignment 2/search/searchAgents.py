@@ -394,27 +394,36 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     #     return 0
     # return min(corners_hvalue)
     unvisted_corners = []
+    corners_hvalue = []
     for i in corners:
         if i not in state[1]:
             unvisted_corners.append(i)
-    if len(unvisted_corners) > 1:
-        for i in unvisted_corners:
-            for j in unvisted_corners:
-                if i != j:
-                    corners_hvalue.append(mazeDistance(i, j, gameState=problem.startingGameState), (i, j)))
-
-        max_distance = max(corners_hvalue, key = itemgetter(1))
-
-        distance = []
-        for i in max_distance[1]:
-            distance.append((abs(state[0][0] - i[0]) + abs(state[0][1] - i[1])))
-        if len(distance) == 0:
-            return 0
-        else:
-            return max(distance) +
-    else:
-        return 0
-
+    # if len(unvisted_corners) > 1:
+    #     for i in unvisted_corners:
+    #         for j in unvisted_corners:
+    #             if i != j:
+    #                 check = True
+    #                 for k in corners_hvalue:
+    #                     if k[1] == (i,j) or k[1] == (j,i):
+    #                         check = False
+    #                 if check:
+    #                     corners_hvalue.append((mazeDistance(i, j, gameState=problem.startingGameState), (i, j)))
+    #
+    #     max_distance = max(corners_hvalue, key=itemgetter(0))
+    #
+    #     distance = []
+    #     for i in max_distance[1]:
+    #         distance.append((mazeDistance(state[0], i, problem.startingGameState)))
+    #     if len(distance) == 0:
+    #         return 0
+    #     else:
+    #         return max(distance) + max_distance[0]
+    # else:
+    #     return 0
+    hValue = [0]
+    for i in unvisted_corners:
+        hValue.append(mazeDistance(state[0], i, problem.startingGameState))
+    return max(hValue)
 
 
 class AStarCornersAgent(SearchAgent):
