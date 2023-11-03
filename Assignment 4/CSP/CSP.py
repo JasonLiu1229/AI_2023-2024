@@ -58,7 +58,6 @@ class CSP(ABC):
         """ Return whether the assignment covers all variables.
             :param assignment: dict (Variable -> value)
         """
-        # TODO: Implement CSP::isComplete (problem 1)
         for i in self.variables:
             if assignment.get(i) is None:
                 return False
@@ -77,7 +76,6 @@ class CSP(ABC):
             Hint: use `CSP::neighbors` and `CSP::isValidPairwise` to check that all binary constraints are satisfied.
             Note that constraints are symmetrical, so you don't need to check them in both directions.
         """
-        # TODO: Implement CSP::isValid (problem 1)
         checked_paires = []
         for i in assignment:
             for j in self.neighbors(i):
@@ -101,7 +99,6 @@ class CSP(ABC):
             Use `CSP::isComplete`, `CSP::isValid`, `CSP::selectVariable` and `CSP::orderDomain`.
             :return: a complete and valid assignment if one exists, None otherwise.
         """
-        # TODO: Implement CSP::_solveBruteForce (problem 1)
         if self.isComplete(assignment):
             return assignment
         var = self.selectVariable(assignment, domains)
