@@ -61,5 +61,26 @@ def queens(n: int = 5, method: Method = Method.bf, MRV: bool = True, LCV: bool =
     solve(csp, method)
 
 
+@app.command()
+def multi_queens(n: int = 10, it: int = 10, mean: bool = False, stdev: bool = False, method: Method = Method.bf, MRV: bool = True, LCV: bool = True):
+    """ Solve the N Queens problem as a CSP. Multiple iterations."""
+    import os
+    import json
+    import numpy as np
+
+    with open("log.json", "w") as file:
+        json.dump({}, file)
+        file.close()
+
+    for i in range(it):
+        os.system('python solver.py queens --n ' + str(n) + f" {'--no-mrv' if not MRV else ''}" + f" {'--no-lcv' if not LCV else ''}")
+
+    values = json.load(open("log.json", "r")).values()
+    calc = np.mean(list(values)), np.std(list(values))
+
+    print(f"Mean: {calc[0]}, Standard deviation: {calc[1]}")
+
+
+
 if __name__ == "__main__":
     app()
