@@ -6,7 +6,6 @@ from abc import ABC, abstractmethod
 
 from util import monitor
 
-
 Value = TypeVar('Value')
 
 
@@ -60,7 +59,10 @@ class CSP(ABC):
             :param assignment: dict (Variable -> value)
         """
         # TODO: Implement CSP::isComplete (problem 1)
-        pass
+        for i in self.variables:
+            if assignment.get(i) is None:
+                return False
+        return self.isValid(assignment)
 
     @abstractmethod
     def isValidPairwise(self, var1: Variable, val1: Value, var2: Variable, val2: Value) -> bool:
@@ -76,7 +78,15 @@ class CSP(ABC):
             Note that constraints are symmetrical, so you don't need to check them in both directions.
         """
         # TODO: Implement CSP::isValid (problem 1)
-        pass
+        checked_paires = []
+        for i in assignment:
+            for j in self.neighbors(i):
+                if (i, j) in checked_paires or (j, i) in checked_paires:
+                    continue
+                if j in assignment:
+                    if not self.isValidPairwise(i, assignment[i], j, assignment[j]):
+                        return False
+        return True
 
     def solveBruteForce(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[Dict[Variable, Value]]:
         """ Called to solve this CSP with brute force technique.
@@ -85,15 +95,27 @@ class CSP(ABC):
         return self._solveBruteForce(initialAssignment, domains)
 
     @monitor
-    def _solveBruteForce(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[Dict[Variable, Value]]:
+    def _solveBruteForce(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[
+        Dict[Variable, Value]]:
         """ Implement the actual backtracking algorithm to brute force this CSP.
             Use `CSP::isComplete`, `CSP::isValid`, `CSP::selectVariable` and `CSP::orderDomain`.
             :return: a complete and valid assignment if one exists, None otherwise.
         """
         # TODO: Implement CSP::_solveBruteForce (problem 1)
-        pass
+        if self.isComplete(assignment):
+            return assignment
+        var = self.selectVariable(assignment, domains)
+        for val in self.orderDomain(assignment, domains, var):
+            assignment[var] = val
+            if self.isValid(assignment):
+                result = self._solveBruteForce(assignment, domains)
+                if result:
+                    return result
+            assignment.pop(var)
 
-    def solveForwardChecking(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[Dict[Variable, Value]]:
+
+    def solveForwardChecking(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[
+        Dict[Variable, Value]]:
         """ Called to solve this CSP with forward checking.
             Initializes the domains and calls `CSP::_solveForwardChecking`. """
         domains = domainsFromAssignment(initialAssignment, self.variables)
@@ -102,7 +124,8 @@ class CSP(ABC):
         return self._solveForwardChecking(initialAssignment, domains)
 
     @monitor
-    def _solveForwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[Dict[Variable, Value]]:
+    def _solveForwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[
+        Dict[Variable, Value]]:
         """ Implement the actual backtracking algorithm with forward checking.
             Use `CSP::forwardChecking` and you should no longer need to check if an assignment is valid.
             :return: a complete and valid assignment if one exists, None otherwise.
@@ -110,7 +133,8 @@ class CSP(ABC):
         # TODO: Implement CSP::_solveForwardChecking (problem 2)
         pass
 
-    def forwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], variable: Variable) -> Dict[Variable, Set[Value]]:
+    def forwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]],
+                        variable: Variable) -> Dict[Variable, Set[Value]]:
         """ Implement the forward checking algorithm from the theory lectures.
 
         :param domains: current domains.
@@ -128,7 +152,8 @@ class CSP(ABC):
 
         # TODO: Implement CSP::selectVariable (problem 2)
 
-    def orderDomain(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], var: Variable) -> List[Value]:
+    def orderDomain(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], var: Variable) -> \
+            List[Value]:
         """ Implement a smart ordering of the domain values. """
         if not self.LCV:
             return list(domains[var])
@@ -144,7 +169,8 @@ class CSP(ABC):
         return self._solveAC3(initialAssignment, domains)
 
     @monitor
-    def _solveAC3(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[Dict[Variable, Value]]:
+    def _solveAC3(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Optional[
+        Dict[Variable, Value]]:
         """
             Implement the actual backtracking algorithm with AC3.
             Use `CSP::ac3`.
@@ -153,7 +179,8 @@ class CSP(ABC):
         # TODO: Implement CSP::_solveAC3 (problem 3)
         pass
 
-    def ac3(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], variable: Variable) -> Dict[Variable, Set[Value]]:
+    def ac3(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], variable: Variable) -> Dict[
+        Variable, Set[Value]]:
         """ Implement the AC3 algorithm from the theory lectures.
 
         :param domains: current domains.
