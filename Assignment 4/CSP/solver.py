@@ -76,7 +76,7 @@ def multi_queens(n: int = 10, it: int = 10, mean: bool = False, stdev: bool = Fa
 
     for i in range(it):
         os.system('python solver.py queens --n ' + str(
-            n) + f" {'--no-mrv' if not MRV else ''}" + f" {'--no-lcv' if not LCV else ''}")
+            n) + f" {'--no-mrv' if not MRV else ''}" + f" {'--no-lcv' if not LCV else ''}" + f" {'' if method == Method.bf else '--method ' + method.value}")
 
     values = json.load(open("log.json", "r")).values()
     calc = np.mean(list(values)), np.std(list(values))

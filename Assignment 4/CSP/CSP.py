@@ -106,10 +106,9 @@ class CSP(ABC):
             assignment[var] = val
             if self.isValid(assignment):
                 result = self._solveBruteForce(assignment, domains)
-                if result:
+                if result is not None:
                     return result
             assignment.pop(var)
-
 
     def solveForwardChecking(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[
         Dict[Variable, Value]]:
@@ -128,7 +127,27 @@ class CSP(ABC):
             :return: a complete and valid assignment if one exists, None otherwise.
         """
         # TODO: Implement CSP::_solveForwardChecking (problem 2)
-        pass
+        for i in domains.values():
+            if len(i) == 0:
+                return None
+
+        if self.isComplete(assignment):
+            return assignment
+        elif self.remainingVariables(assignment) == set():
+            return None
+
+        var = self.selectVariable(assignment, domains)
+
+        for val in self.orderDomain(assignment, domains, var):
+            assignment[var] = val
+            temp_domains = copy.deepcopy(domains)
+            domains = self.forwardChecking(assignment, domains, var)
+            result = self._solveForwardChecking(assignment, domains)
+            if result is not None:
+                return result
+            else:
+                domains = temp_domains
+            assignment.pop(var)
 
     def forwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]],
                         variable: Variable) -> Dict[Variable, Set[Value]]:
@@ -140,7 +159,11 @@ class CSP(ABC):
         :return: the new domains after enforcing all constraints.
         """
         # TODO: Implement CSP::forwardChecking (problem 2)
-        pass
+        value = assignment[variable]
+        for i in self.neighbors(variable):
+            if value in domains[i]:
+                domains[i].remove(value)
+        return domains
 
     def selectVariable(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Variable:
         """ Implement a strategy to select the next variable to assign. """
@@ -148,6 +171,19 @@ class CSP(ABC):
             return random.choice(list(self.remainingVariables(assignment)))
 
         # TODO: Implement CSP::selectVariable (problem 2)
+        # Selection of variable with minimum remaining values,
+        # if multiple variables have the same amount of remaining values, select the one with the most constraints
+
+        min_remaining_values = float('inf')
+        min_remaining_values_var = None
+        for i in self.remainingVariables(assignment):
+            if len(domains[i]) < min_remaining_values:
+                min_remaining_values = len(domains[i])
+                min_remaining_values_var = i
+            elif len(domains[i]) == min_remaining_values:
+                if len(self.neighbors(i)) > len(self.neighbors(min_remaining_values_var)):
+                    min_remaining_values_var = i
+        return min_remaining_values_var
 
     def orderDomain(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], var: Variable) -> \
             List[Value]:
@@ -156,6 +192,20 @@ class CSP(ABC):
             return list(domains[var])
 
         # TODO: Implement CSP::orderDomain (problem 2)
+        # Order domain values by least constraining value heuristic
+        # (i.e. the value that rules out the fewest values in the remaining variables)
+
+        least_constraining_values = []
+
+        for i in domains[var]:
+            count = 0
+            for j in self.neighbors(var):
+                if i in domains[j]:
+                    count += 1
+            least_constraining_values.append((i, count))
+        least_constraining_values.sort(key=lambda x: x[1])
+        return [i[0] for i in least_constraining_values]
+
 
     def solveAC3(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[Dict[Variable, Value]]:
         """ Called to solve this CSP with AC3.
