@@ -204,7 +204,6 @@ class CSP(ABC):
         least_constraining_values.sort(key=lambda x: x[1])
         return [i[0] for i in least_constraining_values]
 
-
     def solveAC3(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[Dict[Variable, Value]]:
         """ Called to solve this CSP with AC3.
             Initializes domains and calls `CSP::_solveAC3`. """
