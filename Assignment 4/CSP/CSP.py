@@ -58,10 +58,7 @@ class CSP(ABC):
         """ Return whether the assignment covers all variables.
             :param assignment: dict (Variable -> value)
         """
-        for i in self.variables:
-            if assignment.get(i) is None:
-                return False
-        return self.isValid(assignment)
+        return self.remainingVariables(assignment) == set()
 
     @abstractmethod
     def isValidPairwise(self, var1: Variable, val1: Value, var2: Variable, val2: Value) -> bool:
@@ -133,8 +130,6 @@ class CSP(ABC):
 
         if self.isComplete(assignment):
             return assignment
-        elif self.remainingVariables(assignment) == set():
-            return None
 
         var = self.selectVariable(assignment, domains)
 
@@ -145,9 +140,9 @@ class CSP(ABC):
             result = self._solveForwardChecking(assignment, domains)
             if result is not None:
                 return result
-            else:
-                domains = temp_domains
+            domains = temp_domains
             assignment.pop(var)
+        return None
 
     def forwardChecking(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]],
                         variable: Variable) -> Dict[Variable, Set[Value]]:
@@ -161,8 +156,11 @@ class CSP(ABC):
         # TODO: Implement CSP::forwardChecking (problem 2)
         value = assignment[variable]
         for i in self.neighbors(variable):
-            if value in domains[i]:
-                domains[i].remove(value)
+            for j in copy.deepcopy(domains[i]):
+                if not self.isValidPairwise(variable, value, i, j):
+                    domains[i].remove(j)
+                    if len(domains[i]) == 0:
+                        return domains
         return domains
 
     def selectVariable(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]]) -> Variable:
