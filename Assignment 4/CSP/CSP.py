@@ -106,6 +106,7 @@ class CSP(ABC):
                 if result is not None:
                     return result
             assignment.pop(var)
+        return None
 
     def solveForwardChecking(self, initialAssignment: Dict[Variable, Value] = dict()) -> Optional[
         Dict[Variable, Value]]:
