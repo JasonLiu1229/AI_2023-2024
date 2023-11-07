@@ -76,7 +76,6 @@ class Cell(Variable):
         super().__init__()
         # TODO: Implement Cell::__init__ (problem 4)
         # You can add parameters as well.
-        self.assigned = 0
 
     @property
     def startDomain(self) -> Set[Value]:
