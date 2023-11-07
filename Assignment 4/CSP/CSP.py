@@ -124,7 +124,6 @@ class CSP(ABC):
             Use `CSP::forwardChecking` and you should no longer need to check if an assignment is valid.
             :return: a complete and valid assignment if one exists, None otherwise.
         """
-        # TODO: Implement CSP::_solveForwardChecking (problem 2)
         for i in domains.values():
             if len(i) == 0:
                 return None
@@ -154,7 +153,6 @@ class CSP(ABC):
         :param variable: The variable that was just assigned (only need to check changes).
         :return: the new domains after enforcing all constraints.
         """
-        # TODO: Implement CSP::forwardChecking (problem 2)
         value = assignment[variable]
         for i in self.neighbors(variable):
             for j in copy.deepcopy(domains[i]):
@@ -169,7 +167,6 @@ class CSP(ABC):
         if not self.MRV:
             return random.choice(list(self.remainingVariables(assignment)))
 
-        # TODO: Implement CSP::selectVariable (problem 2)
         # Selection of variable with minimum remaining values,
         # if multiple variables have the same amount of remaining values, select the one with the most constraints
 
@@ -190,7 +187,6 @@ class CSP(ABC):
         if not self.LCV:
             return list(domains[var])
 
-        # TODO: Implement CSP::orderDomain (problem 2)
         # Order domain values by least constraining value heuristic
         # (i.e. the value that rules out the fewest values in the remaining variables)
 
@@ -222,7 +218,25 @@ class CSP(ABC):
             :return: a complete and valid assignment if one exists, None otherwise.
         """
         # TODO: Implement CSP::_solveAC3 (problem 3)
-        pass
+        for i in domains.values():
+            if len(i) == 0:
+                return None
+
+        if self.isComplete(assignment):
+            return assignment
+
+        var = self.selectVariable(assignment, domains)
+
+        for val in self.orderDomain(assignment, domains, var):
+            assignment[var] = val
+            temp_domains = copy.deepcopy(domains)
+            domains = self.ac3(assignment, domains, var)
+            result = self._solveAC3(assignment, domains)
+            if result is not None:
+                return result
+            domains = temp_domains
+            assignment.pop(var)
+        return None
 
     def ac3(self, assignment: Dict[Variable, Value], domains: Dict[Variable, Set[Value]], variable: Variable) -> Dict[
         Variable, Set[Value]]:
@@ -234,7 +248,35 @@ class CSP(ABC):
         :return: the new domains ensuring arc consistency.
         """
         # TODO: Implement CSP::ac3 (problem 3)
-        pass
+        queue = []
+        for i in assignment.keys():
+            domains[i] = {assignment[i]}
+
+        for i in self.neighbors(variable):
+            queue.append((variable, i))
+            queue.append((i, variable))
+
+        while len(queue) != 0:
+            current = queue.pop(0)
+            temp_domains = self.removeInconsistentValues(current[0], current[1], domains)
+            if temp_domains is not None:
+                for i in self.neighbors(current[0]):
+                    if (i, current[0]) not in queue or (current[0], i) not in queue:
+                        queue.insert(0, (i, current[0]))
+                domains = temp_domains
+        return domains
+
+    def removeInconsistentValues(self, X, Y, domains):
+        temp = copy.deepcopy(domains[X])
+        removed = False
+        for x in temp:
+            if not any([self.isValidPairwise(X, x, Y, y) for y in domains[Y]]):
+                domains[X].remove(x)
+                removed = True
+        if removed:
+            return domains
+        else:
+            return None
 
 
 def domainsFromAssignment(assignment: Dict[Variable, Value], variables: Set[Variable]) -> Dict[Variable, Set[Value]]:
