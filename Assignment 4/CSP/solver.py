@@ -42,7 +42,7 @@ def solve(csp, method: Method, initialAssignment=dict()):
 
 
 @app.command()
-def sudoku(path: str, method: Method = Method.bf, MRV: bool = True, LCV: bool = True):
+def sudoku(path: str = "./puzzles/easy.txt", method: Method = Method.bf, MRV: bool = True, LCV: bool = True):
     """ Solve Sudoku as a CSP. """
     if method == Method.bf:
         MRV = False
