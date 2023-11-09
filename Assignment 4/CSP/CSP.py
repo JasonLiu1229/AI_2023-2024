@@ -217,7 +217,6 @@ class CSP(ABC):
             Use `CSP::ac3`.
             :return: a complete and valid assignment if one exists, None otherwise.
         """
-        # TODO: Implement CSP::_solveAC3 (problem 3)
         for i in domains.values():
             if len(i) == 0:
                 return None
@@ -247,7 +246,6 @@ class CSP(ABC):
         :param variable: The variable that was just assigned (only need to check changes).
         :return: the new domains ensuring arc consistency.
         """
-        # TODO: Implement CSP::ac3 (problem 3)
         queue = []
         for i in assignment.keys():
             domains[i] = {assignment[i]}
