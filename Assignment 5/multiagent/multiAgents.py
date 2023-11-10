@@ -19,6 +19,7 @@ import random, util
 from game import Agent
 from pacman import GameState
 
+
 class ReflexAgent(Agent):
     """
     A reflex agent chooses an action at each choice point by examining
@@ -28,7 +29,6 @@ class ReflexAgent(Agent):
     it in any way you see fit, so long as you don't touch our method
     headers.
     """
-
 
     def getAction(self, gameState: GameState):
         """
@@ -46,7 +46,7 @@ class ReflexAgent(Agent):
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
-        chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+        chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
 
         "Add more of your code here if you want to"
 
@@ -75,7 +75,86 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        score = 0
+
+        # Check if current state is winning state
+        if successorGameState.isWin():
+            return float("inf")
+
+        # Check if current state is losing state
+        if successorGameState.isLose():
+            return float("-inf")
+
+        # Calculate Manhattan distance to all foods from perspective of pacman at the new position
+        food_distances = [manhattanDistance(newPos, food) for food in newFood.asList()]
+        if len(food_distances) == 0:
+            food_distances = [0]
+
+        # Calculate Manhattan distance to all foods from perspective of pacman at the current position
+        food_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), food) for food in newFood.asList()]
+        if len(food_distances_current) == 0:
+            food_distances_current = [0]
+
+        # Calculate Manhattan distance to all ghosts from perspective of pacman at the new position
+        ghost_distances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
+
+        # Calculate Manhattan distance to all ghost from perspective of pacman at the current position
+        ghost_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), ghost.getPosition()) for ghost in newGhostStates]
+
+        # Score calculation
+
+        # If pacman is in the same position as a ghost, return -inf
+        if min(ghost_distances_current) == 0:
+            return float("-inf")
+
+        # Amount of food left in the successor state
+        foodLeftSuccessor = len(newFood.asList())
+        # Amount of food left in the current state
+        foodLeftCurrent = len(currentGameState.getFood().asList())
+        # Amount of pellets left in the successor state
+        pelletsLeftSuccessor = len(successorGameState.getCapsules())
+        # Amount of pellets left in the current state
+        pelletsLeftCurrent = len(currentGameState.getCapsules())
+        # Amount of scared ghosts in the successor state
+        scaredGhostsSuccessor = sum(newScaredTimes)
+
+        score += successorGameState.getScore() - currentGameState.getScore()
+
+        # Check if the next action is stop, if so give a penalty
+        if action == Directions.STOP:
+            score -= 100
+
+        # Reward if pacman eats food or pellets
+        if newPos in currentGameState.getCapsules():
+            score += 100 * (pelletsLeftSuccessor - pelletsLeftCurrent)
+        if foodLeftSuccessor < foodLeftCurrent:
+            score += 200
+
+        # Give penalty based on how much food are left
+        score -= 10 * foodLeftSuccessor
+
+        # reward if new position is closer to food
+        if min(food_distances) < min(food_distances_current):
+            score += 100
+        else:
+            score -= 100
+
+        # If ghost are scared, give reward based on how close the ghosts are
+        if scaredGhostsSuccessor > 0:
+            if min(ghost_distances) < min(ghost_distances_current):
+                score += 100
+            else:
+                score -= 100
+
+        # If ghost are not scared, give penalty based on how close the ghosts are
+        else:
+            if min(ghost_distances) < min(ghost_distances_current):
+                score -= 100
+            else:
+                score += 100
+
+        return score
+
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -86,6 +165,7 @@ def scoreEvaluationFunction(currentGameState: GameState):
     (not reflex agents).
     """
     return currentGameState.getScore()
+
 
 class MultiAgentSearchAgent(Agent):
     """
@@ -102,10 +182,11 @@ class MultiAgentSearchAgent(Agent):
     is another abstract class.
     """
 
-    def __init__(self, evalFn = 'scoreEvaluationFunction', depth = '2'):
-        self.index = 0 # Pacman is always agent index 0
+    def __init__(self, evalFn='scoreEvaluationFunction', depth='2'):
+        self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
+
 
 class MinimaxAgent(MultiAgentSearchAgent):
     """
@@ -138,6 +219,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
+
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
     Your minimax agent with alpha-beta pruning (question 3)
@@ -149,6 +231,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -165,6 +248,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
+
 def betterEvaluationFunction(currentGameState: GameState):
     """
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
@@ -174,6 +258,7 @@ def betterEvaluationFunction(currentGameState: GameState):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 # Abbreviation
 better = betterEvaluationFunction
