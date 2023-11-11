@@ -281,68 +281,67 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        try:
-            def build_tree(input_node, cur_depth: int, agent, numAgents):
-                if cur_depth == self.depth or input_node.get_state().isWin() or input_node.get_state().isLose():
-                    return
-                for action in input_node.get_state().getLegalActions(agent):
-                    child = node(input_node.get_state().generateSuccessor(agent, action), input_node, action, (agent + 1) % numAgents)
-                    input_node.add_child(child)
-                    build_tree(child, cur_depth + 1 if (agent + 1) % numAgents == 0 else cur_depth, (agent + 1) % numAgents,
-                               numAgents)
 
-            def max_value(input_node: node, cur_depth: int, agent, numAgent):
-                if input_node.is_leaf():
-                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
-                    return input_node.get_score()
-                v = float("-inf")
-                for child in input_node.get_children():
-                    v = max(v, min_value(child, cur_depth, child.get_agent(), numAgent))
-                input_node.set_score(v)
-                return v
+        def build_tree(input_node, cur_depth: int, agent, numAgents):
+            if cur_depth == self.depth or input_node.get_state().isWin() or input_node.get_state().isLose():
+                return
+            for action in input_node.get_state().getLegalActions(agent):
+                child = node(input_node.get_state().generateSuccessor(agent, action), input_node, action,
+                             (agent + 1) % numAgents)
+                input_node.add_child(child)
+                build_tree(child, cur_depth + 1 if (agent + 1) % numAgents == 0 else cur_depth, (agent + 1) % numAgents,
+                           numAgents)
 
-            def min_value(input_node: node, cur_depth: int, agent, numAgent):
-                if input_node.is_leaf():
-                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
-                    return input_node.get_score()
-                v = float("inf")
-                for child in input_node.get_children():
-                    next_agent = child.get_agent()
-                    if next_agent == 0:
-                        v = min(v, max_value(child, cur_depth + 1, next_agent, numAgent))
-                    else:
-                        v = min(v, min_value(child, cur_depth, next_agent, numAgent))
-                input_node.set_score(v)
-                return v
+        def max_value(input_node: node, cur_depth: int, agent, numAgent):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = float("-inf")
+            for child in input_node.get_children():
+                v = max(v, min_value(child, cur_depth, child.get_agent(), numAgent))
+            input_node.set_score(v)
+            return v
 
-            def minimax(input_node: node, depth, agent, numAgent):
-                if depth == 0 or input_node.get_state().isWin() or input_node.get_state().isLose():
-                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
-                    return input_node.get_score()
-                if agent == 0:
-                    return max_value(input_node, depth, agent, numAgent)
+        def min_value(input_node: node, cur_depth: int, agent, numAgent):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = float("inf")
+            for child in input_node.get_children():
+                next_agent = child.get_agent()
+                if next_agent == 0:
+                    v = min(v, max_value(child, cur_depth + 1, next_agent, numAgent))
                 else:
-                    return min_value(input_node, depth, agent, numAgent)
+                    v = min(v, min_value(child, cur_depth, next_agent, numAgent))
+            input_node.set_score(v)
+            return v
 
-            number_agent = gameState.getNumAgents()
+        def minimax(input_node: node, depth, agent, numAgent):
+            if depth == 0 or input_node.get_state().isWin() or input_node.get_state().isLose():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            if agent == 0:
+                return max_value(input_node, depth, agent, numAgent)
+            else:
+                return min_value(input_node, depth, agent, numAgent)
 
-            root = node(gameState)
+        number_agent = gameState.getNumAgents()
 
-            build_tree(root, 0, 0, number_agent)
+        root = node(gameState)
 
-            best_score = float("-inf")
-            best_action = None
+        build_tree(root, 0, 0, number_agent)
 
-            minimax(root, self.depth, 0, number_agent)
+        best_score = float("-inf")
+        best_action = None
 
-            for i in root.get_children():
-                if i.get_score() > best_score:
-                    best_score = i.get_score()
-                    best_action = i.get_action()
+        minimax(root, self.depth, 0, number_agent)
 
-            return best_action
-        except:
-            return Directions.STOP
+        for i in root.get_children():
+            if i.get_score() > best_score:
+                best_score = i.get_score()
+                best_action = i.get_action()
+
+        return best_action
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -355,7 +354,78 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        def max_value(input_node: node, cur_depth: int, agent, numAgent, alpha, beta):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = float("-inf")
+            for child in input_node.get_children():
+                v = max(v, min_value(child, cur_depth, child.get_agent(), numAgent, alpha, beta))
+                if v > beta:
+                    input_node.set_score(v)
+                    return v
+                alpha = max(alpha, v)
+            input_node.set_score(v)
+            return v
+
+        def min_value(input_node: node, cur_depth: int, agent, numAgent, alpha, beta):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = float("inf")
+            for child in input_node.get_children():
+                next_agent = child.get_agent()
+                if next_agent == 0:
+                    v = min(v, max_value(child, cur_depth + 1, next_agent, numAgent, alpha, beta))
+                else:
+                    v = min(v, min_value(child, cur_depth, next_agent, numAgent, alpha, beta))
+                if v < alpha:
+                    input_node.set_score(v)
+                    return v
+                beta = min(beta, v)
+            input_node.set_score(v)
+            return v
+
+        def alphaBetaTree(input_node, cur_depth: int, agent, numAgents, alpha, beta):
+            if cur_depth == self.depth or input_node.get_state().isWin() or input_node.get_state().isLose():
+                return
+            for action in input_node.get_state().getLegalActions(agent):
+                child = node(input_node.get_state().generateSuccessor(agent, action), input_node, action,
+                             (agent + 1) % numAgents)
+                input_node.add_child(child)
+                alphaBetaTree(child, cur_depth + 1 if (agent + 1) % numAgents == 0 else cur_depth,
+                              (agent + 1) % numAgents, numAgents, alpha, beta)
+
+                if agent == 0:
+                    v = max_value(child.parent, cur_depth, child.parent.get_agent(), numAgents, alpha, beta)
+                    if v > beta:
+                        return
+                    alpha = max(alpha, v)
+                else:
+                    v = min_value(child.parent, cur_depth, child.parent.get_agent(), numAgents, alpha, beta)
+                    if v < alpha:
+                        return
+                    beta = min(beta, v)
+
+        number_agent = gameState.getNumAgents()
+
+        root = node(gameState)
+
+        alphaBetaTree(root, 0, 0, number_agent, float("-inf"), float("inf"))
+
+        best_score = float("-inf")
+        best_action = None
+
+        for i in root.get_children():
+            if i.get_score() > best_score:
+                best_score = i.get_score()
+                best_action = i.get_action()
+
+        return best_action
+
+
+
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
