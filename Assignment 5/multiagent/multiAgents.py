@@ -341,7 +341,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 best_score = i.get_score()
                 best_action = i.get_action()
 
-        return best_action
+        return best_action if best_action is not None else Directions.STOP
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -422,7 +422,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 best_score = i.get_score()
                 best_action = i.get_action()
 
-        return best_action
+        return best_action if best_action is not None else Directions.STOP
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -498,7 +498,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 best_score = i.get_score()
                 best_action = i.get_action()
 
-        return best_action
+        return best_action if best_action is not None else Directions.STOP
 
 
 def betterEvaluationFunction(currentGameState: GameState):
@@ -506,10 +506,61 @@ def betterEvaluationFunction(currentGameState: GameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: Because we can only look at the current state of the game, we can only make decisions based on the
+    current state. So we will calculate our score based on the current positions of the food, capsules and ghosts.
+    We will also take into account the scared timer of the ghosts. If the ghosts are scared, we will give a reward.
+    If the ghosts are not scared, we will give a penalty. We will also give a reward if the pacman is closer to the
+    food or capsules. We will also give a penalty if the pacman is closer to the ghosts.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    score = currentGameState.getScore()
+
+    curPos = currentGameState.getPacmanPosition()
+    food_pos = currentGameState.getFood().asList()
+    capsules_pos = currentGameState.getCapsules()
+    scaredGhosts = [ghostState.scaredTimer for ghostState in currentGameState.getGhostStates()]
+
+    # Check if current state is winning state
+    if currentGameState.isWin():
+        return float("inf")
+
+    # Check if current state is losing state\
+    if currentGameState.isLose():
+        return float("-inf")
+
+    # Calculate Manhattan distance to all foods from perspective of pacman at the current position
+    food_distances_current = [manhattanDistance(curPos, food) for food in food_pos]
+    if len(food_distances_current) == 0:
+        food_distances_current = [0]
+
+    # Calculate Manhattan distance to all ghosts from perspective of pacman at the current position
+    ghost_distances_current = [manhattanDistance(curPos, ghost.getPosition()) for ghost in
+                               currentGameState.getGhostStates()]
+    if len(ghost_distances_current) == 0:
+        ghost_distances_current = [0]
+
+    # Calculate Manhattan distance to all capsules from perspective of pacman at the current position
+    capsule_distance = [manhattanDistance(curPos, capsule) for capsule in capsules_pos]
+    if len(capsule_distance) == 0:
+        capsule_distance = [0]
+
+    # Score calculation
+
+    # The closer the distance to the food, the higher the score
+    score -= min(food_distances_current)
+
+    # The closer the distance to the capsule, the higher the score
+    score -= min(capsule_distance)
+
+    # If ghost are scared, give reward based on how close the ghosts are
+    if sum(scaredGhosts) > 0:
+        score += min(ghost_distances_current) / 10
+        score += sum(scaredGhosts)
+    else:
+        score -= min(ghost_distances_current) / 10
+        score -= len(currentGameState.getGhostStates())
+
+    return score
 
 
 # Abbreviation
