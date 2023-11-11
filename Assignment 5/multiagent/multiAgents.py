@@ -20,6 +20,68 @@ from game import Agent
 from pacman import GameState
 
 
+class node:
+    def __init__(self, state, parent=None, action=None, agent=0):
+        self.state = state
+        self.parent = parent
+        self.action = action
+        self.children = []
+        self.visited = False
+        self.score = 0
+        self.agent = agent
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    def is_leaf(self):
+        return len(self.children) == 0
+
+    def is_visited(self):
+        return self.visited
+
+    def visit(self):
+        self.visited = True
+
+    def get_state(self):
+        return self.state
+
+    def get_parent(self):
+        return self.parent
+
+    def get_action(self):
+        return self.action
+
+    def get_children(self):
+        return self.children
+
+    def get_score(self):
+        return self.score
+
+    def set_state(self, state):
+        self.state = state
+
+    def set_parent(self, parent):
+        self.parent = parent
+
+    def set_action(self, action):
+        self.action = action
+
+    def set_children(self, children):
+        self.children = children
+
+    def set_score(self, score):
+        self.score = score
+
+    def get_agent(self):
+        return self.agent
+
+    def set_agent(self, agent):
+        self.agent = agent
+
+    def __str__(self):
+        return f"Node: {self.state}"
+
+
 class ReflexAgent(Agent):
     """
     A reflex agent chooses an action at each choice point by examining
@@ -91,7 +153,8 @@ class ReflexAgent(Agent):
             food_distances = [0]
 
         # Calculate Manhattan distance to all foods from perspective of pacman at the current position
-        food_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), food) for food in newFood.asList()]
+        food_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), food) for food in
+                                  newFood.asList()]
         if len(food_distances_current) == 0:
             food_distances_current = [0]
 
@@ -99,7 +162,8 @@ class ReflexAgent(Agent):
         ghost_distances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
 
         # Calculate Manhattan distance to all ghost from perspective of pacman at the current position
-        ghost_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), ghost.getPosition()) for ghost in newGhostStates]
+        ghost_distances_current = [manhattanDistance(currentGameState.getPacmanPosition(), ghost.getPosition()) for
+                                   ghost in newGhostStates]
 
         # Score calculation
 
@@ -211,13 +275,74 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
 
         gameState.isWin():
-        Returns whether or not the game state is a winning state
+        Returns whether the game state is a winning state
 
         gameState.isLose():
-        Returns whether or not the game state is a losing state
+        Returns whether the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        try:
+            def build_tree(input_node, cur_depth: int, agent, numAgents):
+                if cur_depth == self.depth or input_node.get_state().isWin() or input_node.get_state().isLose():
+                    return
+                for action in input_node.get_state().getLegalActions(agent):
+                    child = node(input_node.get_state().generateSuccessor(agent, action), input_node, action, (agent + 1) % numAgents)
+                    input_node.add_child(child)
+                    build_tree(child, cur_depth + 1 if (agent + 1) % numAgents == 0 else cur_depth, (agent + 1) % numAgents,
+                               numAgents)
+
+            def max_value(input_node: node, cur_depth: int, agent, numAgent):
+                if input_node.is_leaf():
+                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                    return input_node.get_score()
+                v = float("-inf")
+                for child in input_node.get_children():
+                    v = max(v, min_value(child, cur_depth, child.get_agent(), numAgent))
+                input_node.set_score(v)
+                return v
+
+            def min_value(input_node: node, cur_depth: int, agent, numAgent):
+                if input_node.is_leaf():
+                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                    return input_node.get_score()
+                v = float("inf")
+                for child in input_node.get_children():
+                    next_agent = child.get_agent()
+                    if next_agent == 0:
+                        v = min(v, max_value(child, cur_depth + 1, next_agent, numAgent))
+                    else:
+                        v = min(v, min_value(child, cur_depth, next_agent, numAgent))
+                input_node.set_score(v)
+                return v
+
+            def minimax(input_node: node, depth, agent, numAgent):
+                if depth == 0 or input_node.get_state().isWin() or input_node.get_state().isLose():
+                    input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                    return input_node.get_score()
+                if agent == 0:
+                    return max_value(input_node, depth, agent, numAgent)
+                else:
+                    return min_value(input_node, depth, agent, numAgent)
+
+            number_agent = gameState.getNumAgents()
+
+            root = node(gameState)
+
+            build_tree(root, 0, 0, number_agent)
+
+            best_score = float("-inf")
+            best_action = None
+
+            minimax(root, self.depth, 0, number_agent)
+
+            for i in root.get_children():
+                if i.get_score() > best_score:
+                    best_score = i.get_score()
+                    best_action = i.get_action()
+
+            return best_action
+        except:
+            return Directions.STOP
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
