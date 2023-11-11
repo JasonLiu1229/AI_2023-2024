@@ -425,9 +425,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         return best_action
 
 
-
-
-
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
@@ -441,7 +438,67 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        def build_tree(input_node, cur_depth: int, agent, numAgents):
+            if cur_depth == self.depth or input_node.get_state().isWin() or input_node.get_state().isLose():
+                return
+            for action in input_node.get_state().getLegalActions(agent):
+                child = node(input_node.get_state().generateSuccessor(agent, action), input_node, action,
+                             (agent + 1) % numAgents)
+                input_node.add_child(child)
+                build_tree(child, cur_depth + 1 if (agent + 1) % numAgents == 0 else cur_depth, (agent + 1) % numAgents,
+                           numAgents)
+
+        def max_value(input_node: node, cur_depth: int, agent, numAgent):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = float("-inf")
+            for child in input_node.get_children():
+                v = max(v, exp_value(child, cur_depth, child.get_agent(), numAgent))
+            input_node.set_score(v)
+            return v
+
+        def exp_value(input_node: node, cur_depth: int, agent, numAgent):
+            if input_node.is_leaf():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            v = 0
+            for child in input_node.get_children():
+                next_agent = child.get_agent()
+                if next_agent == 0:
+                    v += max_value(child, cur_depth + 1, next_agent, numAgent)
+                else:
+                    v += exp_value(child, cur_depth, next_agent, numAgent)
+            input_node.set_score(v / len(input_node.get_children()))
+            return v
+
+        def minimax(input_node: node, depth, agent, numAgent):
+            if depth == 0 or input_node.get_state().isWin() or input_node.get_state().isLose():
+                input_node.set_score(self.evaluationFunction(input_node.get_state()))
+                return input_node.get_score()
+            if agent == 0:
+                return max_value(input_node, depth, agent, numAgent)
+            else:
+                return exp_value(input_node, depth, agent, numAgent)
+
+        number_agent = gameState.getNumAgents()
+
+        root = node(gameState)
+
+        build_tree(root, 0, 0, number_agent)
+
+        best_score = float("-inf")
+        best_action = None
+
+        minimax(root, self.depth, 0, number_agent)
+
+        for i in root.get_children():
+            if i.get_score() > best_score:
+                best_score = i.get_score()
+                best_action = i.get_action()
+
+        return best_action
 
 
 def betterEvaluationFunction(currentGameState: GameState):
