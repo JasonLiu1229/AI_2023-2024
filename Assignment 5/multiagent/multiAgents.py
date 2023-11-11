@@ -550,7 +550,7 @@ def betterEvaluationFunction(currentGameState: GameState):
     score -= min(food_distances_current)
 
     # The closer the distance to the capsule, the higher the score
-    score -= min(capsule_distance)
+    score -= min(capsule_distance) / 2
 
     # If ghost are scared, give reward based on how close the ghosts are
     if sum(scaredGhosts) > 0:
