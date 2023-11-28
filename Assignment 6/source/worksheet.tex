@@ -5,6 +5,7 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{amsmath}
 
 
 % Styling of worksheet
@@ -107,18 +108,18 @@
 		
 		% TODO: Fill in
 		\begin{parts}
-			\part \prob{+b \mid +a}			= \fillin[My answer]
-			\part \prob{+a, +b}				= \fillin[]
-			\part \prob{+a \mid +b}			= \fillin[]
-			\part \prob{-e, +a}				= \fillin[]
+			\part \prob{+b \mid +a}			= \fillin[0.5]
+			\part \prob{+a, +b}				= \fillin[\prob{+a}\prob{+b \mid +a}$=\dfrac{1}{8}$]
+			\part \prob{+a \mid +b}			= \fillin[$\prob{+a \mid +b} = \dfrac{\prob{+b \mid +a} \prob{+a}}{\prob{+b \mid +a}\prob{+a} + \prob{+b \mid -a}\prob{-a}} = \dfrac{0.5 * 0.25}{0.5 * 0.25 + 0.25 * 0.75} = \dfrac{2}{5}$]
+			\part \prob{-e, +a}				= \fillin[$0.25*(0.5 * 0.75 + 0.5 * 0.9) = 0.20625$]
 			\part \prob{D \mid A} =
 				\begin{solution}
 					\begin{tabular}{|c|c|c|}
 						\hline
 						\prob{D \mid A} & $+d$ & $-d$ \\
 						\hline
-						$+a$ & Fill in &  \\
-						$-a$ &  &  \\
+						$+a$ & $\dfrac{7}{40}$ & $\dfrac{3}{40}$ \\
+						$-a$ &  $\dfrac{36}{160}$ & $\dfrac{15}{80}$  \\
 						\hline
 					\end{tabular}
 				\end{solution}
