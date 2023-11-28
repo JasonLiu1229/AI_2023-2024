@@ -140,7 +140,7 @@
 				\checkbox[] $A \indep B$
 				\checkbox[] $A \indep B \mid C$
 				\checkbox[] $A \indep C$
-				\checkbox[] $A \indep C \mid B$ \\
+				\checkbox[x] $A \indep C \mid B$ \\
 				\checkbox[] $B \indep C$
 				\checkbox[] $B \indep C \mid A$
 				\checkbox[] No independence assumptions needed
@@ -150,11 +150,11 @@
 			
 			\begin{oneparcheckboxes}
 				\checkbox[] $A \indep B$
-				\checkbox[] $A \indep B \mid C$
+				\checkbox[x] $A \indep B \mid C$
 				\checkbox[] $A \indep C$
 				\checkbox[] $A \indep C \mid B$ \\
 				\checkbox[] $B \indep C$
-				\checkbox[] $B \indep C \mid A$
+				\checkbox[x] $B \indep C \mid A$
 				\checkbox[] No independence assumptions needed
 			\end{oneparcheckboxes} \\
 			
@@ -162,10 +162,10 @@
 			
 			\begin{oneparcheckboxes}
 				\checkbox[] $A \indep B$
-				\checkbox[] $A \indep B \mid C$
+				\checkbox[x] $A \indep B \mid C$
 				\checkbox[] $A \indep C$
 				\checkbox[] $A \indep C \mid B$ \\
-				\checkbox[] $B \indep C$
+				\checkbox[x] $B \indep C$
 				\checkbox[] $B \indep C \mid A$
 				\checkbox[] No independence assumptions needed
 			\end{oneparcheckboxes} \\
@@ -179,7 +179,7 @@
 				\checkbox[] $A \indep C \mid B$ \\
 				\checkbox[] $B \indep C$
 				\checkbox[] $B \indep C \mid A$
-				\checkbox[] No independence assumptions needed
+				\checkbox[x] No independence assumptions needed
 			\end{oneparcheckboxes}
 		\end{parts}
 		
@@ -195,27 +195,30 @@
 			\part $T \indep Y$ \\
 			Independence is
 			\begin{oneparcheckboxes}		% TODO: Fill in (\checkbox[1] for true)
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
+				$T \rightarrow V \rightarrow Y$\\
+				$T \rightarrow W \rightarrow Y$
 				
 			\end{solution} \vspace{1em}
 			
 			\part $T \indep Y \mid W$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
+				$T \rightarrow V \rightarrow Y$
 				
 			\end{solution} \vspace{1em}
 			
 			\part $U \indep T$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[x] Guaranteed \checkbox[] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
@@ -225,37 +228,41 @@
 			\part $U \indep T \mid Z$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
-				
+				$((U \rightarrow X)$ and $(T \rightarrow X)) \rightarrow Z$ because $Z$ is a decendant of $X$ and $X$ forms a v-structure.
+				While $Z$ is observed, the v-structure is active.
 			\end{solution} \vspace{1em}
 			
 			\part $Z \indep U$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
-				
+				$U \rightarrow X$
 			\end{solution} \vspace{1em}
 			
 			\part $Z \indep Y \mid V$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
+				$T \rightarrow X \rightarrow Z$\\
+				$T \rightarrow W \rightarrow Y$\\
+				$X \leftarrow T \rightarrow W$
 				
 			\end{solution} \vspace{1em}
 			
 			\part $Z \indep Y \mid T, W$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[x] Guaranteed \checkbox[] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
@@ -265,10 +272,12 @@
 			\part $Z \indep W$ \\
 			Independence is
 			\begin{oneparcheckboxes}
-				\checkbox[] Guaranteed \checkbox[] Not Guaranteed
+				\checkbox[] Guaranteed \checkbox[x] Not Guaranteed
 			\end{oneparcheckboxes}
 			\begin{solution}
 				% If not guaranteed, enter active paths:
+				$T \rightarrow X \rightarrow Z$\\
+				$X \leftarrow T \rightarrow W$
 				
 			\end{solution} \vspace{1em}
 		\end{parts}

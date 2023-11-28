@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.23)  28 NOV 2023 16:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.23)  28 NOV 2023 17:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -481,25 +481,25 @@ Package pdftex.def Info: res/separation.pdf  used on input line 192.
 <res/nodes1.pdf, id=71, 476.78125pt x 162.6075pt>
 File: res/nodes1.pdf Graphic file (type pdf)
 <use res/nodes1.pdf>
-Package pdftex.def Info: res/nodes1.pdf  used on input line 285.
+Package pdftex.def Info: res/nodes1.pdf  used on input line 294.
 (pdftex.def)             Requested size: 390.14842pt x 133.06856pt.
 <res/nodes2.pdf, id=72, 391.4625pt x 71.26625pt>
 File: res/nodes2.pdf Graphic file (type pdf)
 <use res/nodes2.pdf>
-Package pdftex.def Info: res/nodes2.pdf  used on input line 289.
+Package pdftex.def Info: res/nodes2.pdf  used on input line 298.
 (pdftex.def)             Requested size: 303.44951pt x 55.24597pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 297--311
+Underfull \hbox (badness 10000) in paragraph at lines 306--320
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--329
+Underfull \hbox (badness 10000) in paragraph at lines 324--338
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 333--347
+Underfull \hbox (badness 10000) in paragraph at lines 342--356
 
  []
 
@@ -507,36 +507,21 @@ Underfull \hbox (badness 10000) in paragraph at lines 333--347
 
 pdfTeX warning: pdflatex.exe (file ./res/nodes2.pdf): PDF inclusion: multiple p
 dfs with page group included in a single page
->]
-
-LaTeX Warning: Reference `q:dseparation' on page 4 undefined on input line 373.
-
-
-[4]
+>] [4]
 This exam contains 5 questions with 30 parts, 0 subparts, and 0 subsubparts.
 This exam has a total of 18 points.
 This exam has a total of 0 bonus points.
 
-Class exam Warning: Point totals have changed. Rerun to get point totals right.
-
-
-
 (C:/Users/liuja/PycharmProjects/AI_2023-2024/Assignment 6/worksheet_answer.pdf/
 worksheet.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `worksheet.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 10857 strings out of 476029
- 168237 string characters out of 5794164
+ 10868 strings out of 476029
+ 168408 string characters out of 5794164
  1887340 words of memory out of 5000000
- 31127 multiletter control sequences out of 15000+600000
+ 31138 multiletter control sequences out of 15000+600000
  520020 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,13n,76p,341b,567s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -553,10 +538,10 @@ pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:
 mf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fo
 nts/type1/public/amsfonts/symbols/msam10.pfb>
 Output written on "C:/Users/liuja/PycharmProjects/AI_2023-2024/Assignment 6/wor
-ksheet_answer.pdf/worksheet.pdf" (4 pages, 175453 bytes).
+ksheet_answer.pdf/worksheet.pdf" (4 pages, 178267 bytes).
 PDF statistics:
- 187 PDF objects out of 1000 (max. 8388607)
- 137 compressed objects within 2 object streams
+ 188 PDF objects out of 1000 (max. 8388607)
+ 138 compressed objects within 2 object streams
  44 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
