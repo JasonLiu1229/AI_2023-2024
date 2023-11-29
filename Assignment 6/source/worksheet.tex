@@ -137,10 +137,10 @@
 			\part $\prob{A, C} = \prob{A \mid B} \prob{C}$ \vspace{.5em}
 			
 			\begin{oneparcheckboxes}		% TODO: Fill in (\checkbox[1] for true)
-				\checkbox[] $A \indep B$
+				\checkbox[x] $A \indep B$
 				\checkbox[] $A \indep B \mid C$
-				\checkbox[] $A \indep C$
-				\checkbox[x] $A \indep C \mid B$ \\
+				\checkbox[x] $A \indep C$
+				\checkbox[] $A \indep C \mid B$ \\
 				\checkbox[] $B \indep C$
 				\checkbox[] $B \indep C \mid A$
 				\checkbox[] No independence assumptions needed
@@ -150,7 +150,7 @@
 			
 			\begin{oneparcheckboxes}
 				\checkbox[] $A \indep B$
-				\checkbox[x] $A \indep B \mid C$
+				\checkbox[] $A \indep B \mid C$
 				\checkbox[] $A \indep C$
 				\checkbox[] $A \indep C \mid B$ \\
 				\checkbox[] $B \indep C$
@@ -162,12 +162,12 @@
 			
 			\begin{oneparcheckboxes}
 				\checkbox[] $A \indep B$
-				\checkbox[x] $A \indep B \mid C$
+				\checkbox[] $A \indep B \mid C$
 				\checkbox[] $A \indep C$
 				\checkbox[] $A \indep C \mid B$ \\
-				\checkbox[x] $B \indep C$
+				\checkbox[] $B \indep C$
 				\checkbox[] $B \indep C \mid A$
-				\checkbox[] No independence assumptions needed
+				\checkbox[x] No independence assumptions needed
 			\end{oneparcheckboxes} \\
 			
 			\part $\prob{A, B \mid C, D} = \prob{A \mid C, D}\prob{B \mid A, C, D}$ \vspace{.5em}
@@ -315,7 +315,7 @@
 					\checkbox[x] $G_9$
 					\checkbox[x] $G_{10}$
 					\\
-					\checkbox[x] None of the above
+					\checkbox[] None of the above
 				\end{oneparcheckboxes} \\
 				
 				\part Assume we know that a joint distribution $d_2$ (over $A$, $B$, $C$) can be represented by Bayes net $\mathbf B_2$. Mark all of the following Bayes nets that are guaranteed to be able to represent $d_2$.
@@ -327,11 +327,11 @@
 					\checkbox[] $G_4$
 					\checkbox[] $G_5$
 					\\
-					\checkbox[] $G_6$
+					\checkbox[x] $G_6$
 					\checkbox[] $G_7$
 					\checkbox[x] $G_8$
 					\checkbox[x] $G_9$
-					\checkbox[] $G_{10}$
+					\checkbox[x] $G_{10}$
 					\\
 					\checkbox[] None of the above
 				\end{oneparcheckboxes} \\
@@ -345,10 +345,10 @@
 					\checkbox[] $G_4$
 					\checkbox[] $G_5$
 					\\
-					\checkbox[x] $G_6$
+					\checkbox[] $G_6$
 					\checkbox[] $G_7$
 					\checkbox[] $G_8$
-					\checkbox[] $G_9$
+					\checkbox[x] $G_9$
 					\checkbox[x] $G_{10}$
 					\\
 					\checkbox[] None of the above
@@ -357,19 +357,19 @@
 				\part Assume we know that a joint distribution $d_4$ (over $A$, $B$, $C$) can be represented by Bayes nets $\mathbf B_1$, $\mathbf B_2$ and $\mathbf B_3$. Mark all of the following Bayes nets that are guaranteed to be able to represent $d_4$.
 				
 				\begin{oneparcheckboxes}
-					\checkbox[] $G_1$
-					\checkbox[] $G_2$
-					\checkbox[] $G_3$
-					\checkbox[] $G_4$
-					\checkbox[] $G_5$
+					\checkbox[x] $G_1$
+					\checkbox[x] $G_2$
+					\checkbox[x] $G_3$
+					\checkbox[x] $G_4$
+					\checkbox[x] $G_5$
 					\\
-					\checkbox[] $G_6$
-					\checkbox[] $G_7$
-					\checkbox[] $G_8$
-					\checkbox[] $G_9$
-					\checkbox[] $G_{10}$
+					\checkbox[x] $G_6$
+					\checkbox[x] $G_7$
+					\checkbox[x] $G_8$
+					\checkbox[x] $G_9$
+					\checkbox[x] $G_{10}$
 					\\
-					\checkbox[x] None of the above
+					\checkbox[] None of the above
 				\end{oneparcheckboxes}
 			\end{parts}
 		\endgradingrange{representation}
@@ -394,47 +394,48 @@
 				\part When eliminating $T$ we generate a new factor $f_2$ as follows, which leaves us with the factors:
 				
 				\begin{solution}		% TODO: Fill in
-					$f_2(...) = $ \\
-					Factors: $ $
+					$f_2(V, W, X) = \sum_{t} \prob{t}\prob{V \mid t}\prob{W \mid t} f_1(X, t)$ \\
+					Factors: $\prob{+z \mid X}, \prob{Y \mid V, W}, f_2(V, W, X)$
 				\end{solution} \vspace{1em}
 			
 				\part When eliminating $X$ we generate a new factor $f_3$ as follows, which leaves us with the factors:
 				
 				\begin{solution}
-					$f_3(...) = $ \\
-					Factors: $ $
+					$f_3(+z, V, W) = \sum_{x} \prob{+z \mid x} f_2(V, W, x) $ \\
+					Factors: $\prob{Y \mid V, W}, f_3(+z, V, W)$
 				\end{solution} \vspace{1em}
 			
 				\part When eliminating $V$ we generate a new factor $f_4$ as follows, which leaves us with the factors:
 				
 				\begin{solution}
-					$f_4(...) = $ \\
-					Factors: $ $
+					$f_4(+z, W, Y) = \sum_{v} \prob{Y \mid v, W} f_3(+z, v ,W)$ \\
+					Factors: $f_4(+z, W, Y)$
 				\end{solution} \vspace{1em}
 			
 				\part When eliminating $W$ we generate a new factor $f_5$ as follows, which leaves us with the factors:
 				
 				\begin{solution}
-					$f_5(...) = $ \\
-					Factors: $ $
+					$f_5(+z, Y) = \sum_{w} f_4(+z, w, Y)$ \\
+					Factors: $f_5(+z, Y)$
 				\end{solution} \vspace{1em}
 			
 				\part How would you obtain $\prob{Y \mid +z}$ from the factors left above?
-				
+
 				\begin{solution}
-					
+					$\prob{Y \mid +z} = \dfrac{f_5(+z, Y)}{\sum_{y} f_5(+z, y)}$ \\
 				\end{solution} \vspace{1em}
 				
 				\part What is the size of the largest factor that gets generated during the above process?
 				
 				\begin{solution}
-					
+					The largest factor will be $f_2(V, W, X)$, which has size $2^3 = 8$.
 				\end{solution} \vspace{1em}
 			
 				\part Does there exist a better elimination ordering (one which generates smaller largest factors)? Argue why not or give an example.
 				
 				\begin{solution}
-					
+					Yes, there exists a better elimination ordering.
+					For example, if we eliminate $X$ before $T$, then the largest factor will be $f_1(X, T)$, which has size $2^2 = 4$.
 				\end{solution} \vspace{1em}
 			\end{parts}
 		\endgradingrange{inference}
