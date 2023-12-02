@@ -149,7 +149,7 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
-
+        # Correct answer
         # Find the most likely position of each ghost
         mostLikelyPositions = []
         for beliefs in livingGhostPositionDistributions:
@@ -175,4 +175,48 @@ class GreedyBustersAgent(BustersAgent):
                 closestAction = action
 
         return closestAction
+
+        # Alternative answer not greedy
+        # # Find the top-k closest ghosts
+        # k = 5  # You can adjust this parameter
+        # distances = []
+        # for position in mostLikelyPositions:
+        #     distance = self.distancer.getDistance(position, pacmanPosition)
+        #     distances.append((distance, position))
+        # distances.sort()  # Sort by distance
+        # top_k_ghosts = [pos for dist, pos in distances[:k]]
+        #
+        # import random
+        #
+        # # Randomly choose a ghost from the top-k ghosts
+        # chosenGhost = random.choice(top_k_ghosts)
+        #
+        # # Find the closest action to the chosen ghost
+        # closestAction = None
+        # closestDistance = None
+        # for action in legal:
+        #     successorPosition = Actions.getSuccessor(pacmanPosition, action)
+        #     distance = self.distancer.getDistance(successorPosition, chosenGhost)
+        #     if closestDistance is None or distance < closestDistance:
+        #         closestDistance = distance
+        #         closestAction = action
+        #
+        # return closestAction
+        # Alternative answer 2
+        # import numpy as np
+        # # Compute distances to all ghosts and convert to probabilities
+        # distances = np.array([self.distancer.getDistance(pacmanPosition, ghostPos)
+        #                       for ghostPos in mostLikelyPositions])
+        # probabilities = np.exp(-distances)  # closer ghosts have higher probability
+        # probabilities /= probabilities.sum()  # normalize to sum to 1
+        #
+        # # Choose a ghost to chase based on the probabilities
+        # chosenIndex = np.random.choice(len(mostLikelyPositions), p=probabilities)
+        # chosenGhost = mostLikelyPositions[chosenIndex]
+        #
+        # # Find the action that minimizes the distance to the chosen ghost
+        # bestAction = min(legal, key=lambda action: self.distancer.getDistance(
+        #     Actions.getSuccessor(pacmanPosition, action), chosenGhost))
+
+        return bestAction
         "*** END YOUR CODE HERE ***"

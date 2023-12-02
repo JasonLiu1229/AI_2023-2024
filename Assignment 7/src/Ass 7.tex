@@ -63,5 +63,20 @@ getObservationProb(observation, pacmanPosition, position, jailPosition) = \\ P(n
 new\_belief[p1] = $\sum_{\substack{p \in allPositions \\ old\_belief[p] \neq 0}} old\_belief[p] \cdot getPositionDistribution(gameState, p)[p1]$\\
 getPositionDistribution(gameState, ghostPosition) = P(ghost position at time t+1 \textbar ghost position at time t)\\
 
+\begin{Question}{3}
+ Alternative answer for GreedyBusterAgent
+\end{Question}
+Correct answer for GreedyBusterAgent: \\
+Average score: 754.7\\
+Alternative answer for GreedyBusterAgent: \\
+Average score: 758.7\\
+Alternative answer 2 for GreedyBusterAgent: \\
+Average score: 754.3\\
+The first alternative answer is better than the correct answer and there is also a variable k that could be played with to change the score.\\
+The first alternative answer is still a bit greedy but added with some randomness so most.\\
+The second alternative answer is a bit less greedy, the strategy is considered less greedy because it doesn't always choose the action that brings Pacman closest to the nearest ghost.
+Instead, it uses a probability distribution to decide which ghost to chase.
+This means that while the closest ghost has the highest probability of being chosen, there's still a chance that a farther ghost might be selected.
+This introduces an element of randomness and exploration into the decision-making process, which can potentially lead to better overall strategies.
 
 \end{document}
