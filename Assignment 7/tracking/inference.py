@@ -329,7 +329,7 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
-        return None if len(self.items()) == 0 else self.update({k: v / self.total() for k, v in self.items()})
+        return None if len(self.items()) == 0 else self.update({k: v / self.total() if self.total() != 0 else 0 for k, v in self.items()})
         "*** END YOUR CODE HERE ***"
 
     def sample(self):
@@ -548,7 +548,11 @@ class ExactInference(InferenceModule):
         position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        self.beliefs.update({p: self.getObservationProb(observation, gameState.getPacmanPosition(), p,
+                                                        self.getJailPosition()) * self.beliefs[p] for p in
+                             self.allPositions})
+
         "*** END YOUR CODE HERE ***"
         self.beliefs.normalize()
 
@@ -566,7 +570,18 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # P(X_t+1 | e_1:t) = sum_{X_t} P(X_t+1 | X_t) * P(X_t | e_1:t)
+        if len(self.allPositions) == 0:
+            return
+
+        temp = DiscreteDistribution()
+        for p in self.allPositions:
+            if self.beliefs[p] == 0:
+                continue
+            newDist = self.getPositionDistribution(gameState, p)
+            for p1 in self.allPositions:
+                temp[p1] += self.beliefs[p] * newDist[p1]
+        self.beliefs = temp
         "*** END YOUR CODE HERE ***"
 
     def getBeliefDistribution(self):
