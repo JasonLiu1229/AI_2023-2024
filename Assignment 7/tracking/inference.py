@@ -614,7 +614,8 @@ class ParticleFilter(InferenceModule):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        for i in range(self.numParticles):
+            self.particles.append(self.legalPositions[i % len(self.legalPositions)])
         "*** END YOUR CODE HERE ***"
 
     def getBeliefDistribution(self):
@@ -626,7 +627,13 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        dist = DiscreteDistribution()
+
+        for p in self.particles:
+            dist[p] += 1
+        dist.normalize()
+
+        return dist
         "*** END YOUR CODE HERE ***"
 
     ########### ########### ###########
@@ -646,7 +653,14 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        dist = DiscreteDistribution()
+        for p in self.particles:
+            dist[p] += self.getObservationProb(observation, gameState.getPacmanPosition(), p,
+                                               self.getJailPosition())
+        if dist.total() == 0:
+            self.initializeUniformly(gameState)
+        else:
+            self.particles = [dist.sample() for _ in range(self.numParticles)]
         "*** END YOUR CODE HERE ***"
 
     ########### ########### ###########
