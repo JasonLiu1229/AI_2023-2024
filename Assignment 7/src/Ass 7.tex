@@ -51,18 +51,17 @@ The \& symbol allows you to line up the ='s or anything else you want to line up
 \begin{center}\begin{LARGE} Assignment 0 \end{LARGE}\end{center}
 
 \begin{Question}{1}
- Exact Inference Observation: Write down the equation of the inference problem you are trying to solve.\\
+ Exact Inference Observation: Write down the equation of the inference problem you are trying to solve.
 \end{Question}
 %\text{{new\_belief}}[p] = \text{{getObservationProb}}(\text{{observation}}, \text{{gameState.getPacmanPosition()}}, p, \text{{self.getJailPosition()}}) \times \text{{old\_belief}}[p]
-new\_belief[p] = $getObservationProb(observation, gameState.getPacmanPosition(), p, self.getJailPosition()) * old\_belief[p]$\\
+new\_belief[p] = $getObservationProb(observation, gameState.getPacmanPosition(), p, $\\
+$self.getJailPosition()) * old\_belief[p]$\\
 getObservationProb(observation, pacmanPosition, position, jailPosition) = \\ P(noisydistance \textbar pacman position, ghost position)
-
 \begin{Question}{2}
- Exact Inference with Time Elapse: Write down the equation of the inference problem you are trying to solve.\\
+ Exact Inference with Time Elapse: Write down the equation of the inference problem you are trying to solve.
 \end{Question}
 new\_belief[p1] = $\sum_{\substack{p \in allPositions \\ old\_belief[p] \neq 0}} old\_belief[p] \cdot getPositionDistribution(gameState, p)[p1]$\\
-getPositionDistribution(gameState, ghostPosition) = P(ghost position at time t+1 \textbar ghost position at time t)\\
-
+getPositionDistribution(gameState, ghostPosition) = P(ghost position at time t+1 \textbar ghost position at time t)
 \begin{Question}{3}
  Alternative answer for GreedyBusterAgent
 \end{Question}
@@ -78,5 +77,14 @@ The second alternative answer is a bit less greedy, the strategy is considered l
 Instead, it uses a probability distribution to decide which ghost to chase.
 This means that while the closest ghost has the highest probability of being chosen, there's still a chance that a farther ghost might be selected.
 This introduces an element of randomness and exploration into the decision-making process, which can potentially lead to better overall strategies.
-
+\begin{Question}{4}
+ Joint Particle Filter Time Elapse and Full Test: As you run the autograder note that q14/1-JointParticlePredict and q14/2-JointParticlePredict test your elapseTime implementations only, and q14/3-JointParticleFulltests both your observeUpdate and elapseTime implementations.
+ Notice the dif-ference between test 1 and test 3.
+ In both tests, pacman knows that the ghostswill move to the sides of the gameboard.
+ What is different between the tests,and why?
+\end{Question}
+In the first test we predict the ghost position, so the longer the ghost stays in a certain position, the more likely it is to be in that position, so pacman will assume more and more that the ghost is in that position.\\
+For the second test, we update based on the last elapse time.
+So we look more to recent estimates of the ghost position, instead of looking at the whole history of the ghost position.\\
+The second test is more accurate because it is based on the most recent information, while the first test is based on the whole history of the ghost position, making use of predictions.
 \end{document}
