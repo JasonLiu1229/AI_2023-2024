@@ -592,7 +592,6 @@ class ParticleFilter(InferenceModule):
     """
     A particle filter for approximately tracking a single ghost.
     """
-
     def __init__(self, ghostAgent, numParticles=300):
         InferenceModule.__init__(self, ghostAgent)
         self.setNumParticles(numParticles)
@@ -710,7 +709,14 @@ class JointParticleFilter(ParticleFilter):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # List of tuples of legal positions, cartesian product of all legal positions number of ghosts times
+        # So the tuple length is the number of ghosts
+        cart_product = list(itertools.product(self.legalPositions, repeat=self.numGhosts))
+
+        random.shuffle(cart_product)
+
+        for i in range(self.numParticles):
+            self.particles.append(cart_product[i % len(cart_product)])
         "*** END YOUR CODE HERE ***"
 
     def addGhostAgent(self, agent):
